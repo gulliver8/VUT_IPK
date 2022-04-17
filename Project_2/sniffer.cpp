@@ -15,6 +15,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <unistd.h>
+#include <time.h>
 
 #include <getopt.h>
 #include <csignal>
@@ -31,6 +32,11 @@
 #include<iostream>
 using namespace std;
 #define BUFFER_SIZE 1024
+#define FAILURE 1
+#define IPV4 0x0800
+#define ARP 0x0806
+#define IPV6 0x86DD
+
 
 void list_interfaces();
 
@@ -45,12 +51,12 @@ int main(int argc, char **argv) {
     char err_buf[PCAP_ERRBUF_SIZE];
     char *end;
     char *interface;
-    char filter_exp[1024];
+    char filter_exp[BUFFER_SIZE];
     string filter;
     int input;
     long int packet_count = 1;      //implicit value of number of packets 1
     bool interface_spec = false;    //was interface specified? if not list interfaces
-
+    struct ether_header *ether_packet;
 
     //process command line arguments
     while ((input = getopt(argc, argv, ":i:p:n:-:tu")) != -1) {
@@ -94,18 +100,18 @@ int main(int argc, char **argv) {
                     filter_arp = true;
                 }else{
                     fprintf(stderr, "invalid long option: --%s\n", optarg);
-                    exit(1);
+                    exit(FAILURE);
                 }
                 break;
             case '?':
                 fprintf(stderr, "invalid option: -%c\n", optopt);
-                exit(1);
+                exit(FAILURE);
             case ':':
                 if(optopt=='i') {
                     printf("option -%c -list interfaces\n", optopt);
                 }else{
                     fprintf(stderr, "option -%c is missing a required argument\n", optopt);
-                    exit(1);
+                    exit(FAILURE);
                 }
             default:
                 break;
@@ -115,26 +121,38 @@ int main(int argc, char **argv) {
     //Initialize sniffing
     if(interface_spec){
         //connect to device
-        pcap_t *handle = pcap_open_live(interface, BUFSIZ, 1, 1000, err_buf);
-        if (handle == NULL) {
+        pcap_t *session = pcap_open_live(interface, BUFSIZ, 1, 1000, err_buf);
+        if (session == NULL) {
             fprintf(stderr, "Couldn't open device %s: %s\n", interface, err_buf);
-            exit(1);
+            exit(FAILURE);
         }else{
             printf("Sniffing started successfully on interface %s.",interface);
         }
 
+        //find out ichosen interface supports ethernet packets
+        if (pcap_datalink(session) != DLT_EN10MB) {
+            fprintf(stderr, "Device %s doesn't provide Ethernet headers - not supported\n", interface);
+            return(2);
+        }
+
+        //Create filter rules, compile and apply
+
+        //create filter expression
         memset(filter_exp, 0, strlen(filter_exp));
         if(!(filter_tcp && filter_udp && filter_icmp && filter_arp)){
             if(!(!filter_tcp && !filter_udp && !filter_icmp && !filter_arp)){
                 if(filter_tcp){
-                    strcat(filter_exp, "tcp ");
+                    strcat(filter_exp, "tcp or ");
                 }if(filter_udp){
-                    strcat(filter_exp, "udp ");
+                    strcat(filter_exp, "udp or ");
                 }if(filter_arp){
-                    strcat(filter_exp, "arp ");
+                    strcat(filter_exp, "arp or ");
                 }if(filter_icmp){
-                    strcat(filter_exp, "icmp ");
+                    strcat(filter_exp, "icmp or ");
                 }
+                filter_exp[strlen(filter_exp)-1] = '\0';
+                filter_exp[strlen(filter_exp)-1] = '\0';
+                filter_exp[strlen(filter_exp)-1] = '\0';
             }
         }
         if(port_spec){
@@ -143,16 +161,59 @@ int main(int argc, char **argv) {
         }
         printf("Filter expression:%s.",filter_exp);
 
+        //Find out netmask
+        bpf_u_int32 mask;		/* The netmask of our sniffing device */
+        bpf_u_int32 net;		/* The IP of our sniffing device */
+
+        if (pcap_lookupnet(interface, &net, &mask, err_buf) == -1) {
+            fprintf(stderr, "Can't get netmask for device %s\n", interface);
+            net = 0;
+            mask = 0;
+        }
+
+        //compile filter expression
+        struct bpf_program compiled_filter;
+        if(pcap_compile(session, &compiled_filter, filter_exp, 0, net) == -1){
+            fprintf(stderr, "Can't compile filter expression\n");
+            exit(FAILURE);
+        }
+
+        //set filter to compiled expression
+        if(pcap_setfilter(session, &compiled_filter) == -1) {
+            fprintf(stderr, "Couldn't install filter %s: %s\n", filter_exp, pcap_geterr(session));
+            exit(FAILURE);
+        }else{
+            printf("Filter expression:%s applied successfully.",filter_exp);
+        }
+
+        //TODO: Primary function loop
+        const u_char *packet;
+        struct pcap_pkthdr packet_header; //TODO: contains packet timestamp and caplen -length of frame in bytes
+        packet = pcap_next(session, &packet_header);
+        printf("timestamp: %ld.%.6ld\n",packet_header.ts.tv_sec,packet_header.ts.tv_usec);
+        //TODO: type of shit
+        ether_packet = (struct ether_header *) packet;
+        printf("src MAC: %02x:%02x:%02x:%02x:%02x:%02x\n",ether_packet->ether_shost[0],ether_packet->ether_shost[1],ether_packet->ether_shost[2],ether_packet->ether_shost[3],ether_packet->ether_shost[4],ether_packet->ether_shost[5]);
+        printf("dst MAC: %02x:%02x:%02x:%02x:%02x:%02x\n",ether_packet->ether_dhost[0],ether_packet->ether_dhost[1],ether_packet->ether_dhost[2],ether_packet->ether_dhost[3],ether_packet->ether_dhost[4],ether_packet->ether_dhost[5]);
+        printf("frame length: %d bytes\n",packet_header.len);
+
+        if(ntohs(ether_packet->ether_type)==ARP){
+            printf("bingo");
+        }else if(ntohs(ether_packet->ether_type)==IPV4){
+            printf("jupi");
+        }else if(ntohs(ether_packet->ether_type)==IPV6){
+            printf("hura");
+        }
 
         //Close the session.
-        pcap_close(handle);
+        pcap_close(session);
     }else{
         //List interfaces function
         list_interfaces();
     }
     return(0);
-    //TODO: Create filter rules, compile and apply
-    //TODO: Primary function loop
+
+
 }
 //List interfaces function
 void list_interfaces(){
