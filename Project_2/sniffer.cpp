@@ -36,6 +36,9 @@ using namespace std;
 #define IPV4 0x0800
 #define ARP 0x0806
 #define IPV6 0x86DD
+#define ICMP 1
+#define TCP 6
+#define UDP 17
 
 
 void list_interfaces();
@@ -57,6 +60,7 @@ int main(int argc, char **argv) {
     long int packet_count = 1;      //implicit value of number of packets 1
     bool interface_spec = false;    //was interface specified? if not list interfaces
     struct ether_header *ether_packet;
+    int protocol;
 
     //process command line arguments
     while ((input = getopt(argc, argv, ":i:p:n:-:tu")) != -1) {
@@ -191,18 +195,50 @@ int main(int argc, char **argv) {
         struct pcap_pkthdr packet_header; //TODO: contains packet timestamp and caplen -length of frame in bytes
         packet = pcap_next(session, &packet_header);
         printf("timestamp: %ld.%.6ld\n",packet_header.ts.tv_sec,packet_header.ts.tv_usec);
-        //TODO: type of shit
+
+        //resolve MAC address and frame length
         ether_packet = (struct ether_header *) packet;
         printf("src MAC: %02x:%02x:%02x:%02x:%02x:%02x\n",ether_packet->ether_shost[0],ether_packet->ether_shost[1],ether_packet->ether_shost[2],ether_packet->ether_shost[3],ether_packet->ether_shost[4],ether_packet->ether_shost[5]);
         printf("dst MAC: %02x:%02x:%02x:%02x:%02x:%02x\n",ether_packet->ether_dhost[0],ether_packet->ether_dhost[1],ether_packet->ether_dhost[2],ether_packet->ether_dhost[3],ether_packet->ether_dhost[4],ether_packet->ether_dhost[5]);
         printf("frame length: %d bytes\n",packet_header.len);
 
+        //resolve src and dst IP addresses
+        struct ip *ipv4_packet;
+        struct ip6_hdr *ipv6_packet;
+        char *src_ip6;
+        char *dst_ip6;
+        struct ether_arp *arp_packet;
+        packet = packet + 14; //cut the ethernet (datalink) header (14 bytes length)
+
         if(ntohs(ether_packet->ether_type)==ARP){
-            printf("bingo");
+            arp_packet = (struct ether_arp *) packet;
+            printf("src IP: %d.%d.%d.%d\n",arp_packet->arp_spa[0],arp_packet->arp_spa[1],arp_packet->arp_spa[2],arp_packet->arp_spa[3]);
+            printf("dst IP: %d.%d.%d.%d\n",arp_packet->arp_tpa[0],arp_packet->arp_tpa[1],arp_packet->arp_tpa[2],arp_packet->arp_tpa[3]);
+
         }else if(ntohs(ether_packet->ether_type)==IPV4){
-            printf("jupi");
+            ipv4_packet = (struct ip *) packet;
+            printf("src IP: %s\n",inet_ntoa(ipv4_packet->ip_src));
+            printf("dst IP: %s\n",inet_ntoa(ipv4_packet->ip_dst));
+            printf("version: %d\n",ipv4_packet->ip_p);
+            protocol = ipv4_packet->ip_p;
+            packet = packet + 4 * ipv4_packet->ip_hl;
         }else if(ntohs(ether_packet->ether_type)==IPV6){
-            printf("hura");
+            ipv6_packet = (struct ip6_hdr *) packet;
+            printf("src IP: %s\n",inet_ntop(AF_INET6,&(ipv6_packet->ip6_src),src_ip6,INET6_ADDRSTRLEN));
+            printf("dst IP: %s\n",inet_ntop(AF_INET6,&(ipv6_packet->ip6_dst),dst_ip6,INET6_ADDRSTRLEN));
+        }
+
+        //resolve port numbers
+        if(protocol != ICMP){
+            if(protocol == UDP){
+
+
+            }else if(protocol == TCP){
+                struct tcphdr *tcp_packet;
+                tcp_packet = (struct tcphdr *) packet;
+                printf("src port: %hu\n",hto(tcp_packet->th_sport));
+                printf("dst port: %hu\n",htons(tcp_packet->th_dport));
+            }
         }
 
         //Close the session.
