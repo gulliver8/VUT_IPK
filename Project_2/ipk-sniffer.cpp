@@ -65,13 +65,11 @@ int main(int argc, char **argv) {
     int input;
     long int packet_count = 1;      //implicit value of number of packets 1
     bool interface_spec = false;    //was interface specified? if not list interfaces
-    bool i_long = false;
     struct ether_header *ether_packet;
     int protocol;
 
     //process command line arguments
     while ((input = getopt(argc, argv, ":i:p:n:-:tu")) != -1) {
-        bool i_long = false;
         switch (input) {
             case 'i':
                 interface = optarg;
@@ -93,30 +91,27 @@ int main(int argc, char **argv) {
             case '-':
                 filter = optarg;
                 if(filter == "tcp"){
-                    //printf("Filter show tcp packets.\n");
                     filter_tcp = true;
                 }else if(filter == "udp"){
                     filter_udp = true;
-                }else if(filter == "icmp")
+                }else if(filter == "icmp"){
                     filter_icmp = true;
                 }else if(filter == "arp"){
                     filter_arp = true;
                 }else if(filter == "interface"){
-                    i_long = true;
                     interface_spec = true;
+                    printf("%d",optind);
+                    interface = argv[optind];
+                    optind += 1;
                 }else{
                     fprintf(stderr, "invalid long option: --%s\n", optarg);
                     exit(FAILURE);
                 }
                 break;
             case '?':
-                if(i_long){
-                    interface = optopt;
-                    printf("Filter show tcp packet%s.\n", interface);
-                }else{
-                    fprintf(stderr, "invalid option: -%c\n", optopt);
-                    exit(FAILURE);
-                }
+                fprintf(stderr, "invalid option: -%c\n", optopt);
+                exit(FAILURE);
+                break;
             case ':':
                 if(optopt!='i') {
                     fprintf(stderr, "option -%c is missing a required argument\n", optopt);
@@ -181,7 +176,7 @@ int main(int argc, char **argv) {
         bpf_u_int32 net;		//The IP of our sniffing device
 
         if (pcap_lookupnet(interface, &net, &mask, err_buf) == -1) {
-            fprintf(stderr, "Can't obtain device netmask.\n", interface);
+            fprintf(stderr, "Can't obtain device netmask.\n");
             net = 0;
             mask = 0;
         }
