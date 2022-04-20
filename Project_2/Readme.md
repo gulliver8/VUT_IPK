@@ -21,7 +21,6 @@ $ Possible arguments to specify program behaviour:
 + -p port	: used to set port on which sniffer looks for packets
 + -n num	: where num sets number of packets for program to print (implicitly set to 1)
 Filtering packets:
-+ current load: GET http://servername:12345/load Usage
 + -u / --udp	: program is going to process packets using UDP protocol
 + -t / --tcp	: program is going to process packets using TCP protocol
 + --icmp	: program is going to process packets using ICMP protocol

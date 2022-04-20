@@ -65,11 +65,13 @@ int main(int argc, char **argv) {
     int input;
     long int packet_count = 1;      //implicit value of number of packets 1
     bool interface_spec = false;    //was interface specified? if not list interfaces
+    bool i_long = false;
     struct ether_header *ether_packet;
     int protocol;
 
     //process command line arguments
     while ((input = getopt(argc, argv, ":i:p:n:-:tu")) != -1) {
+        bool i_long = false;
         switch (input) {
             case 'i':
                 interface = optarg;
@@ -99,14 +101,22 @@ int main(int argc, char **argv) {
                     filter_icmp = true;
                 }else if(filter == "arp"){
                     filter_arp = true;
+                }else if(filter == "interface"){
+                    i_long = true;
+                    interface_spec = true;
                 }else{
                     fprintf(stderr, "invalid long option: --%s\n", optarg);
                     exit(FAILURE);
                 }
                 break;
             case '?':
-                fprintf(stderr, "invalid option: -%c\n", optopt);
-                exit(FAILURE);
+                if(i_long){
+                    interface = optopt;
+                    printf("Filter show tcp packet%s.\n", interface);
+                }else{
+                    fprintf(stderr, "invalid option: -%c\n", optopt);
+                    exit(FAILURE);
+                }
             case ':':
                 if(optopt!='i') {
                     fprintf(stderr, "option -%c is missing a required argument\n", optopt);
