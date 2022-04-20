@@ -6,17 +6,18 @@ Ipk-sniffer is a C++ application, serving as a network analyser. The application
 $ Use make to build the program. 
 $ Run the program 
   ```
-  ./ipk-sniffer [-i rozhraní] {-p ­­port} {[--tcp|-t] [--udp|-u] [--arp] [--icmp] } {-n num}
+  ./ipk-sniffer [-i interface | --interface interface] {-p ­­port} {[--tcp|-t] [--udp|-u] [--arp] [--icmp] } {-n num}
   ```
 
   For example.
 
   ```
-  ./ipk-sniffer -i eth0
+  ./ipk-sniffer --interface eth0
   ```
 
 $ Possible arguments to specify program behaviour:
-+ -i interface	: where interface specifies name of the interface for packet analyser
++ -i / interface: where interface specifies name of the interface for packet analyser
++ --interface i : where i specifies name of the interface for packet analyser	
 		  without specified interface name, program lists all available interfaces
 + -p port	: used to set port on which sniffer looks for packets
 + -n num	: where num sets number of packets for program to print (implicitly set to 1)
@@ -116,3 +117,12 @@ Output:	timestamp: 2022-04-20T18:47:08.967
 ## Contributors
 
 *Lucia Makaiová*  [xmakai00]
+
+## Sources
+
+Copyright 2002 Tim Carstens
+https://www.tcpdump.org/pcap.html
+Copyright © 2000, 2001, 2002, 2007, 2008 Free Software Foundation, Inc. 
+https://www.gnu.org/software/libc/manual/html\_node/Example-of-Getopt.html
+Copyright 1993 David Metcalfe (david@prism.demon.co.uk)
+https://man7.org/linux/man-pages/man3/strftime.3.html
