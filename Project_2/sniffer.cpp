@@ -42,6 +42,7 @@ using namespace std;
 
 
 void list_interfaces();
+void print_data(const u_char *packet, int length, char *packet_data);
 
 bool filter_tcp = false;
 bool filter_icmp = false;
@@ -192,6 +193,7 @@ int main(int argc, char **argv) {
 
         //TODO: Primary function loop
         const u_char *packet;
+        char *packet_data;
         struct pcap_pkthdr packet_header; //TODO: contains packet timestamp and caplen -length of frame in bytes
         packet = pcap_next(session, &packet_header);
         printf("timestamp: %ld.%.6ld\n",packet_header.ts.tv_sec,packet_header.ts.tv_usec);
@@ -201,6 +203,8 @@ int main(int argc, char **argv) {
         printf("src MAC: %02x:%02x:%02x:%02x:%02x:%02x\n",ether_packet->ether_shost[0],ether_packet->ether_shost[1],ether_packet->ether_shost[2],ether_packet->ether_shost[3],ether_packet->ether_shost[4],ether_packet->ether_shost[5]);
         printf("dst MAC: %02x:%02x:%02x:%02x:%02x:%02x\n",ether_packet->ether_dhost[0],ether_packet->ether_dhost[1],ether_packet->ether_dhost[2],ether_packet->ether_dhost[3],ether_packet->ether_dhost[4],ether_packet->ether_dhost[5]);
         printf("frame length: %d bytes\n",packet_header.len);
+
+        print_data(packet, (int)packet_header.len, packet_data);
 
         //resolve src and dst IP addresses
         struct ip *ipv4_packet;
@@ -236,10 +240,12 @@ int main(int argc, char **argv) {
             }else if(protocol == TCP){
                 struct tcphdr *tcp_packet;
                 tcp_packet = (struct tcphdr *) packet;
-                printf("src port: %hu\n",hto(tcp_packet->th_sport));
+                printf("src port: %hu\n",htons(tcp_packet->th_sport));
                 printf("dst port: %hu\n",htons(tcp_packet->th_dport));
             }
         }
+
+        //print_data(packet_data);
 
         //Close the session.
         pcap_close(session);
@@ -258,6 +264,41 @@ void list_interfaces(){
     pcap_if_t *device;
     for(pcap_findalldevs(&device,err_buf);device!=NULL;device = device->next){
         printf("%s\n", device->name);
+    }
+}
+
+void print_data(const u_char *packet, int length, char *packet_data){
+    //printf("0x0000:  ");
+    char char_format[17] = "";
+    //memset(char_format, 0, strlen(char_format));
+    int line_number = 0;
+    int i;
+    for(i = 1; i <= length;i++) {
+        if((i-1)%16==0){
+            printf("%s",char_format);
+            memset(char_format, 0, strlen(char_format));
+            //TODO:print shit characters
+            printf("\n0x%04d:  ",line_number);
+            line_number += 10;
+        }
+        if (!isprint((char)*packet)){
+            char_format[(i-1) % 16] = '.';
+        }else{
+            char_format[(i-1) % 16] = *packet;
+        }
+        printf("%02x ", *packet);
+        if(i%8==0){
+            printf(" ");
+        }
+        packet +=1;
+    }
+    if((i-1)%16 != 0){
+        printf(" ");
+        while((i-1)%16 != 0){
+            printf("   ");
+            i++;
+        }
+        printf("%s\n",char_format);
     }
 }
 
