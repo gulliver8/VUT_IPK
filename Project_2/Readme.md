@@ -107,12 +107,12 @@ Output:	timestamp: 2022-04-20T18:47:08.967
 
 	0x0000:  ff ff ff ff ff ff 00 50  56 c0 00 08 08 00 45 00  .......PV.....E.
 	0x0010:  00 48 41 2c 00 00 80 11  6b 28 c0 a8 06 01 c0 a8  .HA,....k(......
-	0x0020:  06 ff e1 15 e1 15 00 34  3c 65 53 70 6f 74 55 64  .......4<eSpotUd
+	0x0020:  06 ff e1 15 e1 15 00 34  3c 65 53 70 6f 74 55 64  .......4.eSpotUd
 	0x0030:  70 30 d4 5f 40 51 54 1b  15 ef 00 01 00 04 48 95  p0._@QT.......H.
 	0x0040:  c2 03 99 e1 e7 1d 77 71  70 f1 55 4e 33 36 c5 4b  ......wqp.UN36.K
 	0x0050:  ce 1c 4a 49 91 38                                 ..JI.8
 
-  ```		
+  ```
 
 ## Contributors
 
@@ -126,3 +126,5 @@ Copyright © 2000, 2001, 2002, 2007, 2008 Free Software Foundation, Inc.
 https://www.gnu.org/software/libc/manual/html\_node/Example-of-Getopt.html
 Copyright 1993 David Metcalfe (david@prism.demon.co.uk)
 https://man7.org/linux/man-pages/man3/strftime.3.html
+Copyright © 1993–2022 Free Software Foundation, Inc. 
+https://www.gnu.org/software/libc/manual/html_node/Example-of-Getopt.html

@@ -1,13 +1,9 @@
-//======== Copyright (c) 2022, FIT VUT Brno, All rights reserved. ============//
-//
-// $NoKeywords: $sniffer $sniffer.cpp
-// $Author:     Lucia Makaiová <xmakai00@stud.fit.vutbr.cz>
-// $Date:       $2022-04-15
-//============================================================================//
 /**
- * @file        sniffer.cpp
- * @author      Lucia Makaiová
+ * @file        ipk-sniffer.cpp
+ * @author      Lucia Makaiová <xmakai00@stud.fit.vutbr.cz>
+ * @date        022-04-15
  *
+ * @copyright   Copyright (c) 2022
  * @brief
  */
 
@@ -69,6 +65,10 @@ int main(int argc, char **argv) {
     int protocol;
 
     //process command line arguments
+    //MODIFICATED from
+    //SOURCE: https://www.gnu.org/software/libc/manual/html_node/Example-of-Getopt.html
+    //AUTHOR: Free Software Foundation, Inc.
+    //COPYRIGHT: Copyright © 1993–2022 Free Software Foundation, Inc.
     while ((input = getopt(argc, argv, ":i:p:n:-:tu")) != -1) {
         switch (input) {
             case 'i':
@@ -126,6 +126,7 @@ int main(int argc, char **argv) {
     //MODIFICATED from
     //SOURCE: https://www.tcpdump.org/pcap.html
     //AUTHOR: The Tcpdump Group
+    //COPYRIGHT: Copyright 2002 Tim Carstens
     if(interface_spec){
         //connect to device
         pcap_t *session = pcap_open_live(interface, BUFSIZ, 1, 1000, err_buf);
@@ -170,6 +171,7 @@ int main(int argc, char **argv) {
         //MODIFICATED from
         //SOURCE: https://www.tcpdump.org/pcap.html
         //AUTHOR: The Tcpdump Group
+        //COPYRIGHT: Copyright 2002 Tim Carstens
 
 
         bpf_u_int32 mask;		//The netmask of our sniffing device
@@ -180,10 +182,13 @@ int main(int argc, char **argv) {
             net = 0;
             mask = 0;
         }
+        ////
+
         ////compile filter expression
         //MODIFICATED from
         //SOURCE: https://www.tcpdump.org/pcap.html
         //AUTHOR: The Tcpdump Group
+        //COPYRIGHT: Copyright 2002 Tim Carstens
         struct bpf_program compiled_filter;
         if(pcap_compile(session, &compiled_filter, filter_exp, 0, net) == -1){
             fprintf(stderr, "Can't compile filter expression\n");
