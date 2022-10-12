@@ -1,0 +1,1 @@
+CMakeLists.txt not found in /home/student/Desktop/VUT_FIT/2BIT_LS/IPK/Project_2 Select CMakeLists.txt

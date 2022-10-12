@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CMakePresetLoader">{
+  &quot;useNewFormat&quot;: true
+}</component>
+  <component name="CMakeReloadState">
+    <option name="reloaded" value="true" />
+  </component>
+  <component name="CMakeRunConfigurationManager">
+    <generated />
+  </component>
+  <component name="CMakeSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" ENABLED="true" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="614d3c27-1f07-4509-ab92-3c3b14d0dd79" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../../../3BIT_ZS/ISA/Projekt/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/../../../3BIT_ZS/ISA/Projekt/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../3BIT_ZS/ISA/Projekt/isa-netflow.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../3BIT_ZS/ISA/projekt.docx" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../.." />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectApplicationVersion">
+    <option name="ide" value="CLion" />
+    <option name="majorVersion" value="2022" />
+    <option name="minorVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="27q3gk5liX2zLsGvoEKt9EttzTs" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "cmake.loaded.for.project": "true",
+    "last_opened_file_path": "/home/student/Desktop/VUT_FIT/3BIT_ZS/ISA/Projekt/isa-netflow.cpp",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "CLionExternalConfigurable"
+  }
+}]]></component>
+  <component name="RunManager">
+    <configuration name="sniffer.cpp" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="sniffer.cpp" TARGET_NAME="sniffer.cpp" CONFIG_NAME="sniffer.cpp" RUN_PATH="$PROJECT_DIR$/sniffer.cpp">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="614d3c27-1f07-4509-ab92-3c3b14d0dd79" name="Changes" comment="" />
+      <created>1650033907555</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1650033907555</updated>
+      <workItem from="1650033919586" duration="8568000" />
+      <workItem from="1650101974452" duration="6286000" />
+      <workItem from="1650109878550" duration="41000" />
+      <workItem from="1650109975668" duration="620000" />
+      <workItem from="1650129101243" duration="3215000" />
+      <workItem from="1650137396267" duration="7268000" />
+      <workItem from="1650193829040" duration="14736000" />
+      <workItem from="1650310300151" duration="6820000" />
+      <workItem from="1650400105171" duration="24124000" />
+      <workItem from="1650491012494" duration="1071000" />
+      <workItem from="1650492431215" duration="1391000" />
+      <workItem from="1650788357510" duration="155000" />
+      <workItem from="1650793777083" duration="696000" />
+      <workItem from="1665512874610" duration="72000" />
+      <workItem from="1665560400066" duration="1567000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
