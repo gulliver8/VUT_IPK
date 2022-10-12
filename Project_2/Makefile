@@ -1,7 +1,7 @@
 CC=g++
 CFLAGS=-I.
 
-sniffer: sniffer.o
-	$(CC) -o sniffer sniffer.o
+ipk-sniffer: ipk-sniffer.o
+	$(CC) -o ipk-sniffer ipk-sniffer.o -lpcap
 clean: 
-	rm *.o sniffer
+	rm *.o ipk-sniffer
